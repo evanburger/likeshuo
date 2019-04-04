@@ -1,6 +1,8 @@
 import random as rm
 import csv
 
+import yaml
+
 import data
 
 # Private API
@@ -87,7 +89,6 @@ def get_general_commendation():
 	return general_commendation
 
 def get_advice_intros():
-	
 	advice_intros = data.ADVICE_INTROS
 	return advice_intros
 
@@ -112,6 +113,14 @@ def get_pronunciation_intros():
 	pronunciation_intros = data.PRONUNCIATION_INTROS
 	return pronunciation_intros
 
+def get_grammar_intros():
+	grammar_intros = data.GRAMMAR_INTROS
+	return grammar_intros
+
+def get_meaning_intros():
+	meaning_intros = data.MEANING_INTROS
+	return meaning_intros
+
 def customize(commendation, pronunciation, grammar, grammar_openings, meaning):
 	if commendation[0]:
 			commendation_intros = list(get_commendation_intros())
@@ -131,13 +140,13 @@ def customize(commendation, pronunciation, grammar, grammar_openings, meaning):
 	if grammar[0]:
 		#  Attach opening phrases to grammar points.
 		grammar = [grammar_opening.format(grammar=item) for grammar_opening, item in zip(grammar_openings, grammar)]
-		grammar_intro = rm.choice(GRAMMAR_INTROS)
+		grammar_intro = rm.choice(get_grammar_intros())
 		grammar = grammar_intro + ". ".join(grammar) + '.'
 	else:
 		grammar = ""
 	
 	if meaning[0]:
-		meaning_intros = list(MEANING_INTROS)
+		meaning_intros = list(get_meaning_intros())
 		rm.shuffle(meaning_intros)
 		meaning = [intro.format(meaning=item) for intro, item in zip(meaning_intros, meaning)]
 		meaning = " ".join(meaning)
@@ -161,6 +170,22 @@ def make_text(name, past_student, commendation, pronunciation, grammar, meaning,
 	text = text.format(name=", {name}".format(name=name), again=again)
 	return text
 
+def parse_yaml(yaml_string):
+	python_object = yaml.load(yaml_string, Loader=yaml.SafeLoader)
+	name = python_object.get("student_name")
+	past_student = python_object.get("past_student")
+	commendation = python_object.get("commendation")
+	pronunciation = python_object.get("pronunciation")
+	grammar = python_object.get("grammar")
+	meaning = python_object.get("meaning")
+
+
+	return (name, past_student, commendation, pronunciation, grammar, meaning)
+
+def parse_pronunciation(pronunciation):
+	pronunciation__nested_list = [item.split(",") for item in pronunciation]
+	return pronunciation__nested_list
+
 # Public API
 def generate_text(name, past_student, commendation, pronunciation, grammar, meaning):
 	# Get stored data.
@@ -175,4 +200,11 @@ def generate_text(name, past_student, commendation, pronunciation, grammar, mean
 	commendation, pronunciation, grammar, meaning = customize(commendation, pronunciation, grammar, grammar_openings, meaning)
 	text = make_text(name, past_student, commendation, pronunciation, grammar, meaning, generic_comments_list)
 	
+	return text
+
+def generate_text_from_yaml(yaml_string):
+	name, past_student, commendation, pronunciation, grammar, meaning = parse_yaml(yaml_string)
+	pronunciation__nested_list = parse_pronunciation(pronunciation)
+	text = generate_text(name, past_student, commendation, pronunciation__nested_list, grammar, meaning)
+
 	return text
