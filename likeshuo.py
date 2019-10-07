@@ -164,7 +164,7 @@ def make_text(name, past_student, commendation, pronunciation, grammar, meaning,
 	text = """
 {salutation} {greeting}
 {commendation}{commendation_1} {commendation_2} {commendation_3}
-{advice_intro} {pronunciation} {grammar} {meaning}
+{advice_intro}{pronunciation} {grammar} {meaning}
 {goodbye}""".format(salutation=generic_comments_list[0], greeting=generic_comments_list[1], commendation=commendation, commendation_1=generic_comments_list[2], commendation_2=generic_comments_list[3], commendation_3=generic_comments_list[4], advice_intro=generic_comments_list[5], pronunciation=pronunciation, grammar=grammar, meaning=meaning, goodbye=generic_comments_list[6])
 	
 	text = text.format(name=", {name}".format(name=name), again=again)
@@ -183,6 +183,8 @@ def parse_yaml(yaml_string):
 	return (name, past_student, commendation, pronunciation, grammar, meaning)
 
 def parse_pronunciation(pronunciation):
+	if not pronunciation:
+		return None
 	pronunciation__nested_list = [item.split(",") for item in pronunciation]
 	return pronunciation__nested_list
 
