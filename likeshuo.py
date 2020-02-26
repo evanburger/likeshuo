@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+import sys
 import random as rm
 import csv
 
@@ -5,7 +7,9 @@ import yaml
 
 import data
 
-# Private API
+# Private functions
+# =================
+
 def get_name():
 	name = input("Enter the student's name: ")
 	return name
@@ -188,7 +192,9 @@ def parse_pronunciation(pronunciation):
 	pronunciation__nested_list = [item.split(",") for item in pronunciation]
 	return pronunciation__nested_list
 
-# Public API
+# Public functions
+# ================
+
 def generate_text(name, past_student, commendation, pronunciation, grammar, meaning):
 	# Get stored data.
 	salutations = get_salutations()
@@ -210,3 +216,16 @@ def generate_text_from_yaml(yaml_string):
 	text = generate_text(name, past_student, commendation, pronunciation__nested_list, grammar, meaning)
 
 	return text
+
+
+def main():
+	# Get input from user via prompt.
+	stdin_text = sys.stdin.read()
+	# Process user input and stored data.
+	text = generate_text_from_yaml(stdin_text)
+	# Display generated evaluation text to user.
+	print(text)
+
+
+if __name__ == "__main__":
+	main()

@@ -1,3 +1,19 @@
 Likeshuo
 
-This software is used to automate writing student evaluations for Likeshuo.
+This is used to automate writing student evaluations for the English teaching compnay Likeshuo.
+
+It can be used from a terminal shell like this:
+echo """---
+student_name: <NAME>
+past_student: <BOOL>
+commendation:
+  - ''
+pronunciation:
+  - <WORD>,<PRONUNCIATION>
+grammar:
+  - '\"<GOOD>\" instead of \"<BAD>\"' 
+meaning:
+  - '\<"WORD>\" means <MEANING>'
+...""" | ./likeshuo.py
+
+Replace the variables referenced by the <THING> syntax.
